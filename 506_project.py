@@ -121,7 +121,7 @@ def print_menu(menu_type, limit = 100):
 		print "Would you like to use your Facebook data or Cathy's Facebook cached data?"
 		print '===========Options=========='
 		print "mine: Use your Facebook data. (Requires internet connection.)"
-		print "cache: Use Cathy's cache."
+		print "cache: Use Cathy's cache. (default)"
 	elif menu_type == "access token":
 		print 'I will need your Facebook user access token.'
 		webbrowser.open('https://developers.facebook.com/tools/explorer/')
@@ -144,17 +144,24 @@ def print_menu(menu_type, limit = 100):
 		print 'Would you like to write this to a .txt file?'
 		print '===========Options=========='
 		print 'Y: yes'
-		print 'N: no'
+		print 'N: no (default)'
 	elif menu_type == 'youtube':
 		print 'Would you like to listen to some of these artists on YouTube?'
 		print 'This will open a tab on your web browser for each artist on YouTube, so you must have an internet connection.'
 		print '===========Options=========='
-		print 'N: no'
+		print 'N: no (default)'
 		print 'If yes, type how many artists you would to listen to on YouTube.'
 		print 'Cannot exceed ' + str(limit) + ' artists.'
 	elif menu_type == 'genres':
 		print 'How many top genres would you like to output?'
 		print 'Cannot exceed ' + str(limit) + ' genres.'
+
+def put_in_range(num, minimum, maximum):
+	if num > maximum:
+		return maximum
+	elif num < minimum:
+		return minimum
+	return num
 
 def interaction_driver(user, spotify_artist_info, spotify_related_info):
 	print_menu('start')
@@ -165,7 +172,22 @@ def interaction_driver(user, spotify_artist_info, spotify_related_info):
 			#print top recommendations depending on how many they want
 			top_recs = user.top_related_artists(spotify_artist_info, spotify_related_info)
 			print_menu('top related', len(top_recs))
-			num_recs = int(raw_input())
+
+			try:
+				#will fail if a non-number was inputted
+				num_recs = int(raw_input())
+
+			except:
+				invalid = True
+				while invalid:
+					try: 
+						num_recs = int(raw_input('Please enter a valid number.'))
+						invalid = False
+					except:
+						pass
+			#handle numbers not in range
+			num_recs = put_in_range(num_recs, 0, len(top_recs))
+
 			for i in top_recs[:num_recs]:
 				print i
 
@@ -187,11 +209,22 @@ def interaction_driver(user, spotify_artist_info, spotify_related_info):
 			try:
 				#will fail if a non-number was inputted. Meaning No.
 				num_youtube = int(num_youtube)
+
+			except:
+				invalid = True
+				while invalid:
+					try: 
+						num_youtube = int(raw_input('Please enter a valid number.'))
+						invalid = False
+					except:
+						pass
+
+				#in case numbers are out of range
+				num_youtube	= put_in_range(num_youtube, 0, len(top_recs))		
+
 				for artist in top_recs[:num_youtube]:
 					youtube_url = 'https://www.youtube.com/results?search_query=' + artist + '&page=&utm_source=opensearch'
 					webbrowser.open(youtube_url)
-			except:
-				pass
 			
 
 		elif user_input == 'B':
@@ -199,6 +232,10 @@ def interaction_driver(user, spotify_artist_info, spotify_related_info):
 			top_genres = user.top_genres(spotify_artist_info)
 			print_menu('genres', len(top_genres))
 			num_genres = int(raw_input())
+
+			#in case numbers are out of range
+			num_genres = put_in_range(num_genres, 0, len(top_genres))
+
 			for i in top_genres[:num_genres]:
 				print i
 
@@ -241,8 +278,6 @@ def get_facebook_data(fb_access_token = fb_access_token, fb_cache_fname = fb_cac
 		fb_params_dict['access_token'] = fb_access_token
 		fb_response = requests.get(fb_base_url, params= fb_params_dict)
 		fb_data = fb_response.json()
-
-		pprint (fb_data)
 
 		is_more = True
 		#check if need to do paging
@@ -368,7 +403,6 @@ def request_spotify_related(User):
 			print 'Making related artists request to Spotify API'
 			token_response = requests.post(base_url_token, data = param_token_dict, auth = (client_id, client_secret))
 			token_dict = token_response.json()
-			pprint (token_dict)
 			try:
 				access_token = token_dict['access_token']
 			except:
