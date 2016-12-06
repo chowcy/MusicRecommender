@@ -117,7 +117,19 @@ class Artist():
 
 def print_menu(menu_type, limit = 100):
 	print '*************************************'
-	if menu_type == 'start':
+	if menu_type == 'live data':
+		print "Would you like to use your Facebook data or Cathy's Facebook cached data?"
+		print "mine: Use your Facebook data. (Requires internet connection.)"
+		print "cache: Use Cathy's cache."
+	elif menu_type == "access token":
+		print 'I will need your Facebook user access token.'
+		webbrowser.open('https://developers.facebook.com/tools/explorer/')
+		print 'Please select "Get Token" -> "Get User Access Token", and check "user_likes".'
+		print 'Then press "Get Access Token."'
+		print 'A window may prompt you to log in. If it does, log in.'
+		print 'Your access token should now appear. It is a long sequence of letters and numbers.'
+		print 'Please paste this access token into the command line window.'
+	elif menu_type == 'start':
 		print 'What would you like to do?'
 		print 'A: Get top recommended artists.'
 		print 'B: Get your top genres.'
@@ -128,12 +140,12 @@ def print_menu(menu_type, limit = 100):
 		print 'Cannot exceed ' + str(limit) + ' artists.'
 	elif menu_type == 'write to file':
 		print 'Would you like to write this to a .txt file?'
-		print 'If yes, type Y'
-		print 'If no, type N'
+		print 'Y: yes'
+		print 'N: no'
 	elif menu_type == 'youtube':
 		print 'Would you like to listen to some of these artists on YouTube?'
 		print 'This will open a tab on your web browser for each artist on YouTube, so you must have an internet connection.'
-		print 'If no, type N'
+		print 'N: no'
 		print 'If yes, type how many artists you would to listen to on YouTube'
 		print 'Cannot exceed ' + str(limit) + ' artists.'
 	elif menu_type == 'genres':
@@ -141,7 +153,6 @@ def print_menu(menu_type, limit = 100):
 		print 'Cannot exceed ' + str(limit) + ' genres.'
 
 def interaction_driver(user, spotify_artist_info, spotify_related_info):
-	print "Hello! Welcome to Cathy's Music Recommendation Program!"
 	print_menu('start')
 	user_input = raw_input()
 	while user_input != 'Q':
@@ -209,162 +220,198 @@ def interaction_driver(user, spotify_artist_info, spotify_related_info):
 	print 'Goodbye!'
 
 #############GET FACEBOOK DATA AND CACHE###############################
-try:
-	#if a cache file exists, use it
-	#if the file exists, the program will use what's inside it, so make sure it is 
-	#if following line fails, probably because the file does not exist
-	f = open(fb_cache_fname, 'r')
-	fb_data = json.loads(f.read())
-	f.close()
-	print 'Getting data from Facebook Cache'
-
-except: 
-	#if file does not exist
-	print 'Getting data from Facebook API'
-	fb_response = requests.get(fb_base_url, params= fb_params_dict)
-	fb_data = fb_response.json()
-
-	is_more = True
-	#check if need to do paging
+def get_facebook_data(fb_access_token = fb_access_token, use_live = False):
 	try:
-		next_url = fb_data['music']['paging']['next']
-	except KeyError as e:
-		#invalid oauth
-		if e.message == 'music':
-			print 'Invalid Oauth. Either expired or empty. Please get a fresh token from Facebook.'
-		elif e.message == 'next':
-			#there is no next page
-			#e.message would be 'next' in this case
-			print 'No next page'
-			is_more	= False
-		else:
-			print 'unexpected error!'
+		#If using own data, skip caching altogether
+		if use_live:
+			raise Exception
+		#if a cache file exists, use it
+		#if the file exists, the program will use what's inside it, so make sure it is 
+		#if following line fails, probably because the file does not exist
+		f = open(fb_cache_fname, 'r')
+		fb_data = json.loads(f.read())
+		f.close()
+		print 'Getting data from Facebook Cache'
 
-	#need to do paging to get the rest of the artist
+	except: 
+		#if file does not exist
+		print 'Getting data from Facebook API'
+		fb_params_dict['access_token'] = fb_access_token
+		fb_response = requests.get(fb_base_url, params= fb_params_dict)
+		fb_data = fb_response.json()
 
-	while is_more:
-		# try:
-		fb_request = requests.get(next_url)
-		fb_response_ = fb_request.json()
-		fb_data['music']['data'] += fb_response_['data']
-
-		#get next url. if next is missing, means there are no more pages and will skip to exception
+		is_more = True
+		#check if need to do paging
 		try:
-			next_url = fb_response_['paging']['next']
-		except KeyError:
-			print 'No more paging in Facebook'
-			is_more = False
+			next_url = fb_data['music']['paging']['next']
+		except KeyError as e:
+			#invalid oauth
+			if e.message == 'music':
+				print 'Invalid Oauth. Either expired or empty. Please get a fresh token from Facebook.'
+			elif e.message == 'next':
+				#there is no next page
+				#e.message would be 'next' in this case
+				print 'No next page'
+				is_more	= False
+			else:
+				print 'unexpected error!'
 
-	##Cache the data
-	f = open(fb_cache_fname, 'w')
-	f.write(json.dumps(fb_data))
-	f.close()
+		#need to do paging to get the rest of the artist
 
-#################################################################################################
+		while is_more:
+			# try:
+			fb_request = requests.get(next_url)
+			fb_response_ = fb_request.json()
+			fb_data['music']['data'] += fb_response_['data']
 
-print 'Creating FacebookUser instance'
-user = FacebookUser(fb_data)
+			#get next url. if next is missing, means there are no more pages and will skip to exception
+			try:
+				next_url = fb_response_['paging']['next']
+			except KeyError:
+				print 'No more paging in Facebook'
+				is_more = False
+
+		##Cache the data
+		f = open(fb_cache_fname, 'w')
+		f.write(json.dumps(fb_data))
+		f.close()
+	return fb_data
+
+	#################################################################################################
+
+# print 'Creating FacebookUser instance'
+# user = FacebookUser(fb_data)
 
 ##############################GET SPOTIFY SEARCH AND CACHE#######################################
-#dict for storing results of searches
-spotify_search_cache = {}
-#dict for storing data on Artists user likes that return search results 
-spotify_artist_info = {}
+def run_spotify_search(User):
+	#dict for storing results of searches
+	spotify_search_cache = {}
+	#dict for storing data on Artists user likes that return search results 
+	spotify_artist_info = {}
 
-#Check whether spotify cache file has been created
-try:
-	f = open(spot_artist_cache_fname, 'r')
-	spotify_search_cache = json.loads(f.read())
+	#Check whether spotify cache file has been created
+	try:
+		f = open(spot_artist_cache_fname, 'r')
+		spotify_search_cache = json.loads(f.read())
+		f.close()
+	except:
+		print 'no spotify search cache found'
+
+	#goes through list of artists and caches if not found in cache
+	for artist_name in User.list_artists:
+		#artist name has been searched and is in cache
+		try: 
+			#if the artist is in the cache, just pull the value from the cache
+			if spotify_search_cache[artist_name] != 'none':
+				spotify_artist_info[artist_name] = spotify_search_cache[artist_name]
+
+		#artist name has not been searched for
+		except KeyError as e:
+
+			print 'Making search request to Spotify API'
+			param_search_dict['q'] = artist_name
+			search_response = requests.get(base_url_search, params = param_search_dict)
+			artist_search_data = search_response.json()	
+
+			#if at least one artist is returned from search results
+			if artist_search_data['artists']['total'] > 0:
+				#index 0 to get the first/top search result
+				artist_info = artist_search_data['artists']['items'][0]
+				#add to cache
+				spotify_search_cache[artist_name] = artist_info
+				#add to our data structure
+				spotify_artist_info[artist_name] = artist_info
+
+			#no search results found :(
+			else:
+				print 'No search results found for ' + artist_name
+				print 'Removing ' + artist_name + ' from analysis'
+				#note that in cache, there are no results
+				spotify_search_cache[artist_name] = 'none'
+
+	f = open(spot_artist_cache_fname, 'w')
+	f.write(json.dumps(spotify_search_cache))
 	f.close()
-except:
-	print 'no spotify search cache found'
 
-#goes through list of artists and caches if not found in cache
-for artist_name in user.list_artists:
-	#artist name has been searched and is in cache
-	try: 
-		#if the artist is in the cache, just pull the value from the cache
-		if spotify_search_cache[artist_name] != 'none':
-			spotify_artist_info[artist_name] = spotify_search_cache[artist_name]
-
-	#artist name has not been searched for
-	except KeyError as e:
-
-		print 'Making search request to Spotify API'
-		param_search_dict['q'] = artist_name
-		search_response = requests.get(base_url_search, params = param_search_dict)
-		artist_search_data = search_response.json()	
-
-		#if at least one artist is returned from search results
-		if artist_search_data['artists']['total'] > 0:
-			#index 0 to get the first/top search result
-			artist_info = artist_search_data['artists']['items'][0]
-			#add to cache
-			spotify_search_cache[artist_name] = artist_info
-			#add to our data structure
-			spotify_artist_info[artist_name] = artist_info
-
-		#no search results found :(
-		else:
-			print 'No search results found for ' + artist_name
-			print 'Removing ' + artist_name + ' from analysis'
-			#note that in cache, there are no results
-			spotify_search_cache[artist_name] = 'none'
-
-f = open(spot_artist_cache_fname, 'w')
-f.write(json.dumps(spotify_search_cache))
-f.close()
+	return spotify_artist_info
 
 #######################GET SPOTIFY RELATED ARTISTS AND CACHE#########################################
 
-#dict for storing results of related artists
-spotify_related_cache = {}
-spotify_related_info = {}
+def request_spotify_related(User):
+	#dict for storing results of related artists
+	spotify_related_cache = {}
+	spotify_related_info = {}
 
-#Check whether spotify cache file has been created
-try:
-	f = open(spot_related_cache_fname, 'r')
-	spotify_related_cache = json.loads(f.read())
+	#Check whether spotify cache file has been created
+	try:
+		f = open(spot_related_cache_fname, 'r')
+		spotify_related_cache = json.loads(f.read())
+		f.close()
+	except:
+		print 'no spotify related artists cache found'
+
+	#goes through list of artists and caches if not found in cache
+	for artist in User.get_Artist_list(spotify_artist_info):
+		#artist name has been found and is in cache
+		try: 
+			if spotify_related_cache[artist.artist_id] != 'none':
+				spotify_related_info[artist.artist_id] = spotify_related_cache[artist.artist_id]
+
+		#related artists have not been searched for
+		except KeyError as e:
+
+			print 'Making related artists request to Spotify API'
+			token_response = requests.post(base_url_token, data = param_token_dict, auth = (client_id, client_secret))
+			token_dict = token_response.json()
+			access_token = token_dict['access_token']
+			header_dict_token = {'Authorization': ('Bearer ' + access_token)}
+			param_search_dict['id'] = artist.artist_id
+			related_response = requests.get((base_url_related + artist.artist_id + '/related-artists'), headers = header_dict_token)
+			artist_related_data = related_response.json()	
+
+			#if at least one artist is returned from related results
+			if len(artist_related_data['artists']) > 0:
+				spotify_related_info[artists.artist_id] = artist_related_data['artists']
+				spotify_related_cache[artist.artist_id] = artist_related_data['artists']
+
+			#no search results found :(
+			else:
+				print 'No related artists found for ' + artist.artist_name
+				print 'Removing ' + artist.artist_name + ' from analysis'
+				spotify_related_cache[artist.artist_id] = 'none'
+
+	f = open(spot_related_cache_fname, 'w')
+	f.write(json.dumps(spotify_related_cache))
 	f.close()
-except:
-	print 'no spotify related artists cache found'
 
-#goes through list of artists and caches if not found in cache
-for artist in user.get_Artist_list(spotify_artist_info):
-	#artist name has been found and is in cache
-	try: 
-		if spotify_related_cache[artist.artist_id] != 'none':
-			spotify_related_info[artist.artist_id] = spotify_related_cache[artist.artist_id]
+	return spotify_related_info
+#########################################START OF PROGRAM##################################################
 
-	#related artists have not been searched for
-	except KeyError as e:
+print "Hello! Welcome to Cathy's Music Recommendation Program!"
 
-		print 'Making related artists request to Spotify API'
-		token_response = requests.post(base_url_token, data = param_token_dict, auth = (client_id, client_secret))
-		token_dict = token_response.json()
-		access_token = token_dict['access_token']
-		header_dict_token = {'Authorization': ('Bearer ' + access_token)}
-		param_search_dict['id'] = artist.artist_id
-		related_response = requests.get((base_url_related + artist.artist_id + '/related-artists'), headers = header_dict_token)
-		artist_related_data = related_response.json()	
+#Ask whether user wants to use own data or cached data
+print_menu('live data')
+live = raw_input()
 
-		#if at least one artist is returned from related results
-		if len(artist_related_data['artists']) > 0:
-			spotify_related_info[artists.artist_id] = artist_related_data['artists']
-			spotify_related_cache[artist.artist_id] = artist_related_data['artists']
+#Ask for their access token if they want to use their own data
+if live == 'mine':
+	print_menu('access token')
+	fb_access_token = raw_input()
+	fb_user_data = get_facebook_data(live, True)
+else:
+	fb_user_data = get_facebook_data()
 
-		#no search results found :(
-		else:
-			print 'No related artists found for ' + artist.artist_name
-			print 'Removing ' + artist.artist_name + ' from analysis'
-			spotify_related_cache[artist.artist_id] = 'none'
+print 'Creating Facebook User instance'
+User = FacebookUser(fb_user_data)
 
-f = open(spot_related_cache_fname, 'w')
-f.write(json.dumps(spotify_related_cache))
-f.close()
-###################################################################################################################
+print 'Getting Spotify search data'
+spotify_artist_info = run_spotify_search(User)
 
-interaction_driver(user, spotify_artist_info, spotify_related_info)
+print 'Getting Spotify related artist data'
+spotify_related_info = request_spotify_related(User)
+
+print 'Starting main driver'
+interaction_driver(User, spotify_artist_info, spotify_related_info)
 
 ##UNIT TESTS USING MY FACEBOOK ACCOUNT
 # me = FacebookUser(fb_data)
