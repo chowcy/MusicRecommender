@@ -82,7 +82,7 @@ class FacebookUser():
 							freq_dict[related_artist.artist_name] = 1
 		return [ freq[0] for freq in sorted(freq_dict.items(), key = lambda (x, y): y, reverse = True) ]
 
-	#REQUIRES: dictionary of  liked artists' data from Spotify
+	#REQUIRES: dictionary of liked artists' data from Spotify
 	#EFFECTS:  returns list of all genres for all users' liked artists, sorted from most frequent to least
 	def top_genres(self, artist_data_dict):
 		freq_dict = {}
@@ -106,8 +106,8 @@ class Artist():
 		return self.artist_name
 
 	def get_related_artists(self, related_artist_data):
-	#there may be artists that we could find searches for, but which have no related artists.
-	#if no related artists were found, will go to except block
+		#there may be artists that we could find searches for, but which have no related artists.
+		#if no related artists were found, will go to except block and return None
 		try:
 			related_artists = related_artist_data[self.artist_id]
 			#if related artists exist, return related artists list
@@ -119,6 +119,7 @@ def print_menu(menu_type, limit = 100):
 	print '*************************************'
 	if menu_type == 'live data':
 		print "Would you like to use your Facebook data or Cathy's Facebook cached data?"
+		print '===========Options=========='
 		print "mine: Use your Facebook data. (Requires internet connection.)"
 		print "cache: Use Cathy's cache."
 	elif menu_type == "access token":
@@ -131,6 +132,7 @@ def print_menu(menu_type, limit = 100):
 		print 'Please paste this access token into the command line window.'
 	elif menu_type == 'start':
 		print 'What would you like to do?'
+		print '===========Options=========='
 		print 'A: Get top recommended artists.'
 		print 'B: Get your top genres.'
 		print 'Q: Quit this program.'
@@ -140,13 +142,15 @@ def print_menu(menu_type, limit = 100):
 		print 'Cannot exceed ' + str(limit) + ' artists.'
 	elif menu_type == 'write to file':
 		print 'Would you like to write this to a .txt file?'
+		print '===========Options=========='
 		print 'Y: yes'
 		print 'N: no'
 	elif menu_type == 'youtube':
 		print 'Would you like to listen to some of these artists on YouTube?'
 		print 'This will open a tab on your web browser for each artist on YouTube, so you must have an internet connection.'
+		print '===========Options=========='
 		print 'N: no'
-		print 'If yes, type how many artists you would to listen to on YouTube'
+		print 'If yes, type how many artists you would to listen to on YouTube.'
 		print 'Cannot exceed ' + str(limit) + ' artists.'
 	elif menu_type == 'genres':
 		print 'How many top genres would you like to output?'
@@ -220,11 +224,9 @@ def interaction_driver(user, spotify_artist_info, spotify_related_info):
 	print 'Goodbye!'
 
 #############GET FACEBOOK DATA AND CACHE###############################
-def get_facebook_data(fb_access_token = fb_access_token, use_live = False):
+def get_facebook_data(fb_access_token = fb_access_token, fb_cache_fname = fb_cache_fname):
+	fb_cache = {}
 	try:
-		#If using own data, skip caching altogether
-		if use_live:
-			raise Exception
 		#if a cache file exists, use it
 		#if the file exists, the program will use what's inside it, so make sure it is 
 		#if following line fails, probably because the file does not exist
@@ -240,6 +242,8 @@ def get_facebook_data(fb_access_token = fb_access_token, use_live = False):
 		fb_response = requests.get(fb_base_url, params= fb_params_dict)
 		fb_data = fb_response.json()
 
+		pprint (fb_data)
+
 		is_more = True
 		#check if need to do paging
 		try:
@@ -247,6 +251,7 @@ def get_facebook_data(fb_access_token = fb_access_token, use_live = False):
 		except KeyError as e:
 			#invalid oauth
 			if e.message == 'music':
+				print fb_access_token
 				print 'Invalid Oauth. Either expired or empty. Please get a fresh token from Facebook.'
 			elif e.message == 'next':
 				#there is no next page
@@ -256,7 +261,7 @@ def get_facebook_data(fb_access_token = fb_access_token, use_live = False):
 			else:
 				print 'unexpected error!'
 
-		#need to do paging to get the rest of the artist
+			#need to do paging to get the rest of the artist
 
 		while is_more:
 			# try:
@@ -363,7 +368,11 @@ def request_spotify_related(User):
 			print 'Making related artists request to Spotify API'
 			token_response = requests.post(base_url_token, data = param_token_dict, auth = (client_id, client_secret))
 			token_dict = token_response.json()
-			access_token = token_dict['access_token']
+			pprint (token_dict)
+			try:
+				access_token = token_dict['access_token']
+			except:
+				print 'Probably invalid client id and client secret!!!'
 			header_dict_token = {'Authorization': ('Bearer ' + access_token)}
 			param_search_dict['id'] = artist.artist_id
 			related_response = requests.get((base_url_related + artist.artist_id + '/related-artists'), headers = header_dict_token)
@@ -371,7 +380,7 @@ def request_spotify_related(User):
 
 			#if at least one artist is returned from related results
 			if len(artist_related_data['artists']) > 0:
-				spotify_related_info[artists.artist_id] = artist_related_data['artists']
+				spotify_related_info[artist.artist_id] = artist_related_data['artists']
 				spotify_related_cache[artist.artist_id] = artist_related_data['artists']
 
 			#no search results found :(
@@ -397,7 +406,7 @@ live = raw_input()
 if live == 'mine':
 	print_menu('access token')
 	fb_access_token = raw_input()
-	fb_user_data = get_facebook_data(live, True)
+	fb_user_data = get_facebook_data(fb_access_token = fb_access_token, fb_cache_fname = 'fb_music_cache1.txt')
 else:
 	fb_user_data = get_facebook_data()
 
