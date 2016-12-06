@@ -46,39 +46,47 @@ base_url_related = 'https://api.spotify.com/v1/artists/'
 
 class FacebookUser():
 
-	def __init__(self, fb_data1):
-		self.user_id = fb_data1['id']
-		self.user_name = fb_data1['name']
+	def __init__(self, fb_data):
+		self.user_id = fb_data['id']
+		self.user_name = fb_data['name']
 		#list of names of artists liked on facebook
-		self.list_artists = [artist['name'] for artist in fb_data1['music']['data']]
+		self.list_artists = [artist['name'] for artist in fb_data['music']['data']]
 
 	def __str__(self):
 		return self.user_name
 
-	#create list of Artist objects for each artist liked that has Spotify data
-	def create_Artist_obj_list(self, artist_data_dict):
-		Artist_list = []
-		for artist in self.list_artists:
-			artist_info = artist_data_dict[artist]
-			if artist_info != 'none':
-				Artist_list.append(Artist(artist_info))
-		return Artist_list
+	#REQUIRES: dictionary of liked artists' data from Spotify
+	#EFFECTS: returns list of Artist objects for each artist user like that has Spotify data
+	def get_Artist_list(self, artist_data_dict):
 
+		return [ Artist(artist_data_dict[artist]) for artist in artist_data_dict ]
+
+
+	#REQUIRES: dictionary of  liked artists' data from Spotify
+	#		   dictionary of the related artists of those artists (so it can be passed into the Artist constructor
+	#EFFECTS:  returns list of all related artists for all users' liked artists, sorted from most frequent to least
 	def top_related_artists(self, artist_data_dict, related_artist_data):
 		freq_dict = {}
-		Artist_list = self.create_Artist_obj_list(artist_data_dict)
+		Artist_list = self.get_Artist_list(artist_data_dict)
 		for artist in Artist_list:
+			#if manage to get related artists for that artist
 			if artist.get_related_artists(related_artist_data) != None: 
+
 				for related_artist in artist.get_related_artists(related_artist_data):
-					if related_artist.artist_name in freq_dict:
-						freq_dict[related_artist.artist_name] += 1
-					else:
-						freq_dict[related_artist.artist_name] = 1
+
+					#only include recommendations for artists that the user does not already like
+					if related_artist.artist_name not in [artist.artist_name for artist in Artist_list]:
+						if related_artist.artist_name in freq_dict:
+							freq_dict[related_artist.artist_name] += 1
+						else:
+							freq_dict[related_artist.artist_name] = 1
 		return [ freq[0] for freq in sorted(freq_dict.items(), key = lambda (x, y): y, reverse = True) ]
 
-	def top_genres(self, artist_data_dict, related_artist_data):
+	#REQUIRES: dictionary of  liked artists' data from Spotify
+	#EFFECTS:  returns list of all genres for all users' liked artists, sorted from most frequent to least
+	def top_genres(self, artist_data_dict):
 		freq_dict = {}
-		Artist_list = self.create_Artist_obj_list(artist_data_dict)
+		Artist_list = self.get_Artist_list(artist_data_dict)
 		for artist in Artist_list:
 			if len(artist.genres) > 0: 
 				for genre in artist.genres:
@@ -98,11 +106,14 @@ class Artist():
 		return self.artist_name
 
 	def get_related_artists(self, related_artist_data):
-		related_artists = related_artist_data[self.artist_id]
-		#if related artists exist
-		if related_artists != 'none':
-			return [Artist(artist) for artist in related_artists]
-
+	#there may be artists that we could find searches for, but which have no related artists.
+	#if no related artists were found, will go to except block
+		try:
+			related_artists = related_artist_data[self.artist_id]
+			#if related artists exist, return related artists list
+			return [ Artist(artist) for artist in related_artists ]
+		except: 
+			pass
 
 def print_menu(menu_type, limit = 100):
 	print '*************************************'
@@ -129,7 +140,7 @@ def print_menu(menu_type, limit = 100):
 		print 'How many top genres would you like to output?'
 		print 'Cannot exceed ' + str(limit) + ' genres.'
 
-def interaction_driver():
+def interaction_driver(user, spotify_artist_info, spotify_related_info):
 	print "Hello! Welcome to Cathy's Music Recommendation Program!"
 	print_menu('start')
 	user_input = raw_input()
@@ -137,7 +148,7 @@ def interaction_driver():
 		if user_input == 'A':
 
 			#print top recommendations depending on how many they want
-			top_recs = user.top_related_artists(spotify_search_cache_dict,related_artist_data)
+			top_recs = user.top_related_artists(spotify_artist_info, spotify_related_info)
 			print_menu('top related', len(top_recs))
 			num_recs = int(raw_input())
 			for i in top_recs[:num_recs]:
@@ -170,7 +181,7 @@ def interaction_driver():
 
 		elif user_input == 'B':
 			#print top genres depending on how many they want
-			top_genres = user.top_genres(spotify_search_cache_dict, related_artist_data)
+			top_genres = user.top_genres(spotify_artist_info)
 			print_menu('genres', len(top_genres))
 			num_genres = int(raw_input())
 			for i in top_genres[:num_genres]:
@@ -199,15 +210,16 @@ def interaction_driver():
 
 #############GET FACEBOOK DATA AND CACHE###############################
 try:
+	#if a cache file exists, use it
+	#if the file exists, the program will use what's inside it, so make sure it is 
 	#if following line fails, probably because the file does not exist
 	f = open(fb_cache_fname, 'r')
 	fb_data = json.loads(f.read())
 	f.close()
 	print 'Getting data from Facebook Cache'
+
 except: 
-	print "no Facebook Cache found"
-
-
+	#if file does not exist
 	print 'Getting data from Facebook API'
 	fb_response = requests.get(fb_base_url, params= fb_params_dict)
 	fb_data = fb_response.json()
@@ -255,21 +267,25 @@ user = FacebookUser(fb_data)
 
 ##############################GET SPOTIFY SEARCH AND CACHE#######################################
 #dict for storing results of searches
-spotify_search_cache_dict = {}
+spotify_search_cache = {}
+#dict for storing data on Artists user likes that return search results 
+spotify_artist_info = {}
 
 #Check whether spotify cache file has been created
 try:
 	f = open(spot_artist_cache_fname, 'r')
-	spotify_search_cache_dict = json.loads(f.read())
+	spotify_search_cache = json.loads(f.read())
 	f.close()
 except:
-	print 'no spotify cache found'
+	print 'no spotify search cache found'
 
 #goes through list of artists and caches if not found in cache
 for artist_name in user.list_artists:
 	#artist name has been searched and is in cache
 	try: 
-		spotify_artist_info = spotify_search_cache_dict[artist_name]
+		#if the artist is in the cache, just pull the value from the cache
+		if spotify_search_cache[artist_name] != 'none':
+			spotify_artist_info[artist_name] = spotify_search_cache[artist_name]
 
 	#artist name has not been searched for
 	except KeyError as e:
@@ -278,46 +294,47 @@ for artist_name in user.list_artists:
 		param_search_dict['q'] = artist_name
 		search_response = requests.get(base_url_search, params = param_search_dict)
 		artist_search_data = search_response.json()	
+
 		#if at least one artist is returned from search results
 		if artist_search_data['artists']['total'] > 0:
 			#index 0 to get the first/top search result
 			artist_info = artist_search_data['artists']['items'][0]
-			spotify_search_cache_dict[artist_name] = artist_info
+			#add to cache
+			spotify_search_cache[artist_name] = artist_info
+			#add to our data structure
+			spotify_artist_info[artist_name] = artist_info
 
 		#no search results found :(
 		else:
 			print 'No search results found for ' + artist_name
 			print 'Removing ' + artist_name + ' from analysis'
-			# spotify_search_cache_dict[artist_name] = artist_search_data['artists']['items']
-			spotify_search_cache_dict[artist_name] = 'none'
+			#note that in cache, there are no results
+			spotify_search_cache[artist_name] = 'none'
 
 f = open(spot_artist_cache_fname, 'w')
-f.write(json.dumps(spotify_search_cache_dict))
+f.write(json.dumps(spotify_search_cache))
 f.close()
-
-#####################################################################################################
-
-#create list of Artist objects for each artist liked that has Spotify data
-Artist_list = user.create_Artist_obj_list(spotify_search_cache_dict)
 
 #######################GET SPOTIFY RELATED ARTISTS AND CACHE#########################################
 
 #dict for storing results of related artists
-spotify_related_cache_dict = {}
+spotify_related_cache = {}
+spotify_related_info = {}
 
 #Check whether spotify cache file has been created
 try:
 	f = open(spot_related_cache_fname, 'r')
-	spotify_related_cache_dict = json.loads(f.read())
+	spotify_related_cache = json.loads(f.read())
 	f.close()
 except:
 	print 'no spotify related artists cache found'
 
 #goes through list of artists and caches if not found in cache
-for artist in user.create_Artist_obj_list(spotify_search_cache_dict):
+for artist in user.get_Artist_list(spotify_artist_info):
 	#artist name has been found and is in cache
 	try: 
-		spotify_related_info = spotify_related_cache_dict[artist.artist_id]
+		if spotify_related_cache[artist.artist_id] != 'none':
+			spotify_related_info[artist.artist_id] = spotify_related_cache[artist.artist_id]
 
 	#related artists have not been searched for
 	except KeyError as e:
@@ -330,33 +347,24 @@ for artist in user.create_Artist_obj_list(spotify_search_cache_dict):
 		param_search_dict['id'] = artist.artist_id
 		related_response = requests.get((base_url_related + artist.artist_id + '/related-artists'), headers = header_dict_token)
 		artist_related_data = related_response.json()	
+
 		#if at least one artist is returned from related results
 		if len(artist_related_data['artists']) > 0:
-			related_info = artist_related_data['artists']
-			spotify_related_cache_dict[artist.artist_id] = related_info
+			spotify_related_info[artists.artist_id] = artist_related_data['artists']
+			spotify_related_cache[artist.artist_id] = artist_related_data['artists']
 
 		#no search results found :(
 		else:
 			print 'No related artists found for ' + artist.artist_name
 			print 'Removing ' + artist.artist_name + ' from analysis'
-			
-			spotify_related_cache_dict[artist.artist_id] = 'none'
+			spotify_related_cache[artist.artist_id] = 'none'
 
 f = open(spot_related_cache_fname, 'w')
-f.write(json.dumps(spotify_related_cache_dict))
+f.write(json.dumps(spotify_related_cache))
 f.close()
 ###################################################################################################################
-related_artist_data = spotify_related_cache_dict
 
-interaction_driver()
-# print 'your top recommended artists are: '
-# top_10_recommended = user.top_related_artists(spotify_search_cache_dict,related_artist_data)
-# for i in top_10_recommended:
-# 	print i
-# for artist in top_10_recommended[:10]:
-# 	youtube_url = 'https://www.youtube.com/results?search_query=' + artist + '&page=&utm_source=opensearch'
-# 	webbrowser.open(youtube_url)
-
+interaction_driver(user, spotify_artist_info, spotify_related_info)
 
 ##UNIT TESTS USING MY FACEBOOK ACCOUNT
 # me = FacebookUser(fb_data)
