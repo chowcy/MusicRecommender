@@ -49,7 +49,7 @@ class FacebookUser():
 	def __init__(self, fb_data):
 		self.user_id = fb_data['id']
 		self.user_name = fb_data['name']
-		#list of names of artists liked on facebook
+		#list of names of artists liked on facebook. Will be filtered when making Artist objects
 		self.list_artists = [artist['name'] for artist in fb_data['music']['data']]
 
 	def __str__(self):
@@ -317,11 +317,6 @@ def get_facebook_data(fb_access_token = fb_access_token, fb_cache_fname = fb_cac
 		f.close()
 	return fb_data
 
-	#################################################################################################
-
-# print 'Creating FacebookUser instance'
-# user = FacebookUser(fb_data)
-
 ##############################GET SPOTIFY SEARCH AND CACHE#######################################
 def run_spotify_search(User):
 	#dict for storing results of searches
@@ -377,7 +372,7 @@ def run_spotify_search(User):
 
 #######################GET SPOTIFY RELATED ARTISTS AND CACHE#########################################
 
-def request_spotify_related(User):
+def request_spotify_related(User, spotify_artist_info):
 	#dict for storing results of related artists
 	spotify_related_cache = {}
 	spotify_related_info = {}
@@ -430,121 +425,104 @@ def request_spotify_related(User):
 	return spotify_related_info
 #########################################START OF PROGRAM##################################################
 
-print "Hello! Welcome to Cathy's Music Recommendation Program!"
+# print "Hello! Welcome to Cathy's Music Recommendation Program!"
 
-#Ask whether user wants to use own data or cached data
-print_menu('live data')
-live = raw_input()
+# #Ask whether user wants to use own data or cached data
+# print_menu('live data')
+# live = raw_input()
 
-#Ask for their access token if they want to use their own data
-if live == 'mine':
-	print_menu('access token')
-	fb_access_token = raw_input()
-	fb_user_data = get_facebook_data(fb_access_token = fb_access_token, fb_cache_fname = 'fb_music_cache1.txt')
-else:
-	fb_user_data = get_facebook_data()
+# #Ask for their access token if they want to use their own data
+# if live == 'mine':
+# 	print_menu('access token')
+# 	fb_access_token = raw_input()
+# 	fb_user_data = get_facebook_data(fb_access_token = fb_access_token, fb_cache_fname = 'fb_music_cache1.txt')
+# else:
+# 	fb_user_data = get_facebook_data()
 
-print 'Creating Facebook User instance'
-User = FacebookUser(fb_user_data)
+# print 'Creating Facebook User instance'
+# User = FacebookUser(fb_user_data)
 
-print 'Getting Spotify search data'
-spotify_artist_info = run_spotify_search(User)
+# print 'Getting Spotify search data'
+# spotify_artist_info = run_spotify_search(User)
 
-print 'Getting Spotify related artist data'
-spotify_related_info = request_spotify_related(User)
+# print 'Getting Spotify related artist data'
+# spotify_related_info = request_spotify_related(User)
 
-print 'Starting main driver'
-interaction_driver(User, spotify_artist_info, spotify_related_info)
+# print 'Starting main driver'
+# interaction_driver(User, spotify_artist_info, spotify_related_info)
 
 ##UNIT TESTS USING MY FACEBOOK ACCOUNT
-# me = FacebookUser(fb_data)
-# test_artist = {
-# 'name': 'sample name',
-# 'id': 'sample id',
-# 'genres': ['rock', 'pop', 'jazz']
-# }
-# class FacebookUserClass(unittest.TestCase):
+sample_fb_data = {"music": {
+					 "data": [
+					 {"created_time": "2016-12-03T17:49:10+0000", "name": "Passion Pit", "id": "63224190085"}, 
+					 {"created_time": "2016-12-03T17:48:07+0000", "name": "Deafheaven", "id": "152244168212417"}, 
+					 {"created_time": "2016-12-03T17:46:41+0000", "name": "Xerath", "id": "33434396077"}, 
+					 {"created_time": "2016-12-03T17:46:11+0000", "name": "The Faceless", "id": "200878716073"} ] }, 
+				"name": "Test User", 
+				"id": "10153037726223192" } 
+me = FacebookUser(sample_fb_data)
 
-# 	def test_name(self):
-# 		self.assertEqual(me.user_name, 'Cat Chow', "testing facebook user's name") 
-# 	def test_id(self):
-# 		self.assertEqual(me.user_id, '10153037726223192', "testing facebook user's id #") 
-# 	def test_list_artists1(self):
-# 		self.assertEqual(me.list_artists[0], 'Passion Pit', "testing facebook user's first music like")
-# 	def test_list_artists2(self):
-# 		self.assertEqual(me.list_artists[-1], 'Cradle of Filth', "testing facebook user's last music like")
-
-# class ArtistClass(unittest.TestCase):
-
-# 	def test_name(self):
-# 		self.assertEqual(Artist(test_artist).artist_name, 'sample name', "testing whether name correct")		
-# 	def test_id(self):
-# 		self.assertEqual(Artist(test_artist).artist_id, 'sample id', "testing whether id correct")
-# 	def test_genres(self):
-# 		self.assertEqual(Artist(test_artist).genres, ['rock', 'pop', 'jazz'], "testing whether genres correct")
-
-# class ArtistList(unittest.TestCase):
-
-# 	def test_first_id(self):
-# 		self.assertEqual(me.create_Artist_obj_list(spotify_search_cache_dict)[0].artist_id, '7gjAu1qr5C2grXeQFFOGeh', "testing whether first artist id is correct")	
-# 	def test_first_name(self):
-# 		self.assertEqual(me.create_Artist_obj_list(spotify_search_cache_dict)[0].artist_name, 'Passion Pit', "testing whether first artist name is correct")
-# 	def test_first_genre_f(self):
-# 		self.assertEqual(me.create_Artist_obj_list(spotify_search_cache_dict)[0].genres[0], 'alternative dance', "testing whether first genre of first artist is correct")
-# 	def test_first_genre_l(self):
-# 		self.assertEqual(me.create_Artist_obj_list(spotify_search_cache_dict)[0].genres[-1], 'synthpop', "testing whether last genre of first artist is correct")
-
-# 	def test_last_id(self):
-# 		self.assertEqual(me.create_Artist_obj_list(spotify_search_cache_dict)[-1].artist_id, '0NTSMFFapnyZfvmCwzcYPd', "testing whether last artist id is correct")	
-# 	def test_last_name(self):
-# 		self.assertEqual(me.create_Artist_obj_list(spotify_search_cache_dict)[-1].artist_name, 'Cradle Of Filth', "testing whether last artist name is correct")
-# 	def test_last_genre_f(self):
-# 		self.assertEqual(me.create_Artist_obj_list(spotify_search_cache_dict)[-1].genres[0], 'alternative metal', "testing whether first genre of last artist is correct")
-# 	def test_last_genre_l(self):
-# 		self.assertEqual(me.create_Artist_obj_list(spotify_search_cache_dict)[-1].genres[-1], 'symphonic black metal', "testing whether last genre of last artist is correct")
-
-# unittest.main(verbosity=2)
-
-# 		print '_____________________________'
-# 		print 'ARTIST RECOMMENDATIONS FOR: ' + artist_name
-# 		#http://stackoverflow.com/questions/30557409/python-spotify-api-post-call
-		#make request to get audio features about a song. requires token
-	# 	r = requests.post(base_url, data = param_dict, auth = (client_id, client_secret))
-	# 	python_dict = r.json()
-	# 	access_token = python_dict['access_token']
-	# 	#get audio features using token
-	# 	header_dict_token = {'Authorization': ('Bearer ' + access_token)}
-	# 	r = requests.get((base_url_token + artist_id + '/related-artists'), headers = header_dict_token)
-	# 	related_artist_dict = r.json()
-
-	# 	for item in related_artist_dict['artists']:
-	# 		try:
-	# 			print item['name']
-	# 		except:
-	# 			print 'No recommended artists for: ' + artist_name
-	# except:
-	# 	print 'No spotify artist called ' + artist_name
+#will use my cache to look up artists
+my_spotify_artists = run_spotify_search(me)
+my_spotify_related = request_spotify_related(me, my_spotify_artists)
+my_Artist_list = me.get_Artist_list(my_spotify_artists)
 
 
-# def create_artist_obj_list(artist_id_list):
-# 	print 'Making request to Spotify Get Several Artists endpoint'
+test_artist = {
+'name': 'sample name',
+'id': 'sample id',
+'genres': ['rock', 'pop', 'jazz']
+}
+the_faceless_data = {
+'name': 'The Faceless',
+'id': "1FQ6uth7icR6Jhla16K2vC",
+'genres': ["brutal death metal", "death core", "death metal", "deathgrind", "djent", "jazz metal", "mathcore", "melodic metalcore", "metalcore", "technical death metal"]
+}
+the_faceless = Artist(the_faceless_data)
 
-# 	#Get Several Artists has a maximum of 50
-# 	#Figure out how many requests need to be made
-# 	MAX_ARTISTS = 50
-# 	lst_length = len(artist_id_list)
-# 	num_requests = lst_length / MAX_ARTISTS
-# 	if lst_length % MAX_ARTISTS != 0:
-# 		num_requests += 1
+class FacebookUserClass(unittest.TestCase):
 
-# 	artist_obj_list = []
-# 	for i in range(num_requests):
-# 		param_artists_dict = {}
-# 		#ids value is ids separated by commas
-# 		artist_id_list_50 = artist_id_list[(MAX_ARTISTS * i):]
-# 		param_artists_dict['ids'] = ','.join(artist_id_list_50)
+	def test_name(self):
+		self.assertEqual(me.user_name, 'Test User', "testing facebook user's name") 
+	def test_id(self):
+		self.assertEqual(me.user_id, '10153037726223192', "testing facebook user's id #") 
+	def test_list_artists1(self):
+		self.assertEqual(me.list_artists[0], 'Passion Pit', "testing facebook user's first music like")
+	def test_list_artists2(self):
+		self.assertEqual(me.list_artists[-1], 'The Faceless', "testing facebook user's last music like")
 
-# 		artists_response = requests.get(base_url_artists, params = param_artists_dict)
-# 		artists_data = artists_response.json()['artists']
-# 		artist_obj_list += [Artist(artist) for artist in artists_data]
-# 	return artist_obj_list
+class ArtistClass(unittest.TestCase):
+
+	def test_name(self):
+		self.assertEqual(Artist(test_artist).artist_name, 'sample name', "testing whether name correct")		
+	def test_id(self):
+		self.assertEqual(Artist(test_artist).artist_id, 'sample id', "testing whether id correct")
+	def test_genres(self):
+		self.assertEqual(Artist(test_artist).genres, ['rock', 'pop', 'jazz'], "testing whether genres correct")
+
+#Artist_list's order changes so can't assertEqual my_Artist_list[0].artist_name. using assertIn instead
+class GetArtistList(unittest.TestCase):
+	def test_length(self):
+		self.assertEqual(len(my_Artist_list), 4, "testing whether length of list is correct")
+	def test_Name1(self):
+		self.assertIn("Passion Pit", [i.artist_name for i in my_Artist_list], "testing whether name is in list")		
+	def test_id1(self):
+		self.assertIn('7gjAu1qr5C2grXeQFFOGeh', [i.artist_id for i in my_Artist_list], "testing whether Passion Pit's id in list")
+	def test_Genres1(self):
+		self.assertIn( "alternative dance", [i.genres[0] for i in my_Artist_list], "testing whether passion pit's first genre correct")		
+	def test_Name2(self):
+		self.assertIn('The Faceless', [i.artist_name for i in my_Artist_list], "testing whether the Faceless is in list")
+	def test_Id2(self):
+		self.assertIn("1FQ6uth7icR6Jhla16K2vC", [i.artist_id for i in my_Artist_list], "testing whether the Faceless' id is in the list")
+	def test_Genres2(self):
+		self.assertIn("brutal death metal", [i.genres[0] for i in my_Artist_list], "testing whether the Faceless's first genre is correct")
+
+class GetRelatedArtist(unittest.TestCase):
+	def test_length(self):
+		self.assertEqual(len(the_faceless.get_related_artists(my_spotify_related)), 20, "testing whether length of GetRelatedArtist list correct")
+	def test_name(self):
+		self.assertIn("Job For A Cowboy", [ i.artist_name for i in the_faceless.get_related_artists(my_spotify_related)], "testing whether related artist name shows up")		
+	def test_id(self):
+		self.assertIn("5L3QTPofDwMPGlNnQkyHK1", [ i.artist_id for i in the_faceless.get_related_artists(my_spotify_related)], "testing whether related artist id shows up")		
+
+unittest.main(verbosity=2)
