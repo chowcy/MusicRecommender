@@ -1,4 +1,6 @@
-#Cathy Chow
+# SI 506 Final Project
+# Coded by Cathy Chow, 2016.
+
 import requests
 import json
 import unittest
@@ -16,7 +18,6 @@ fb_params_dict = {}
 fb_params_dict['access_token'] = fb_access_token
 fb_params_dict['fields'] = 'music, name, id'
 
-#Can change this if you don't want to use my cache
 fb_cache_fname = "fb_music_cache.txt"
 spot_artist_cache_fname = "spotify_search_cache.txt"
 spot_related_cache_fname = 'spotify_related_cache.txt'
@@ -49,42 +50,52 @@ class FacebookUser():
 	def __init__(self, fb_data):
 		self.user_id = fb_data['id']
 		self.user_name = fb_data['name']
+
 		#list of names of artists liked on facebook. Will be filtered when making Artist objects
 		self.list_artists = [artist['name'] for artist in fb_data['music']['data']]
 
 	def __str__(self):
 		return self.user_name
 
-	#REQUIRES: dictionary of liked artists' data from Spotify
-	#EFFECTS: returns list of Artist objects for each artist user like that has Spotify data
 	def get_Artist_list(self, artist_data_dict):
+		'''
+			REQUIRES: dictionary of liked artists' data from Spotify
+			EFFECTS: returns list of Artist objects only for each artist the user likes that has Spotify data
+		'''
 
 		return [ Artist(artist_data_dict[artist]) for artist in artist_data_dict ]
 
-
-	#REQUIRES: dictionary of  liked artists' data from Spotify
-	#		   dictionary of the related artists of those artists (so it can be passed into the Artist constructor
-	#EFFECTS:  returns list of all related artists for all users' liked artists, sorted from most frequent to least
 	def top_related_artists(self, artist_data_dict, related_artist_data):
+		'''
+		REQUIRES: dictionary of  liked artists' data from Spotify
+		dictionary of the related artists of those artists (so it can be passed into the Artist constructor)
+		EFFECTS:  returns list of all related artists for all users' liked artists, sorted from most frequent to least
+		'''
+
 		freq_dict = {}
 		Artist_list = self.get_Artist_list(artist_data_dict)
 		for artist in Artist_list:
 			#if manage to get related artists for that artist
 			if artist.get_related_artists(related_artist_data) != None: 
-
+				#for each related artist in the Artist list
 				for related_artist in artist.get_related_artists(related_artist_data):
 
 					#only include recommendations for artists that the user does not already like
 					if related_artist.artist_name not in [artist.artist_name for artist in Artist_list]:
+
+						#put into dictionary
 						if related_artist.artist_name in freq_dict:
 							freq_dict[related_artist.artist_name] += 1
 						else:
 							freq_dict[related_artist.artist_name] = 1
-		return [ freq[0] for freq in sorted(freq_dict.items(), key = lambda (x, y): y, reverse = True) ]
+		alphabetized = sorted(freq_dict.items(), key = lambda (x, y) : x.upper())
+		return [ freq for freq in sorted(alphabetized, key = lambda (x, y): y, reverse = True) ]
 
-	#REQUIRES: dictionary of liked artists' data from Spotify
-	#EFFECTS:  returns list of all genres for all users' liked artists, sorted from most frequent to least
 	def top_genres(self, artist_data_dict):
+		'''
+		REQUIRES: dictionary of liked artists' data from Spotify
+		EFFECTS:  returns list of all genres for all users' liked artists, sorted from most frequent to least
+		'''
 		freq_dict = {}
 		Artist_list = self.get_Artist_list(artist_data_dict)
 		for artist in Artist_list:
@@ -94,7 +105,8 @@ class FacebookUser():
 						freq_dict[genre] += 1
 					else:
 						freq_dict[genre] = 1
-		return [ freq[0] for freq in sorted(freq_dict.items(), key = lambda (x, y): y, reverse = True) ]
+		alphabetized = sorted(freq_dict.items(), key = lambda (x, y) : x.upper())
+		return [ freq for freq in sorted(alphabetized, key = lambda (x, y): y, reverse = True) ]
 
 class Artist():
 	def __init__(self, artist_data):
@@ -106,6 +118,10 @@ class Artist():
 		return self.artist_name
 
 	def get_related_artists(self, related_artist_data):
+		'''
+		REQUIRES: a dictionary that has information on related artists for artists
+		EFFECTS: returns a list of Artist objects for each related artist that has data in the dictionary passed in. 
+		'''
 		#there may be artists that we could find searches for, but which have no related artists.
 		#if no related artists were found, will go to except block and return None
 		try:
@@ -116,9 +132,14 @@ class Artist():
 			pass
 
 def print_menu(menu_type, limit = 100):
+	'''
+		REQUIRES: a menu type to specify which menu to print
+		EFFECTS: prints the correct menu depending on menu_type, prints a limit if the user needs to know that in the menu
+	'''
 	print '*************************************'
 	if menu_type == 'live data':
 		print "Would you like to use your Facebook data or Cathy's Facebook cached data?"
+		print "In order to use your Facebook data, you must have some musicians/bands liked."
 		print '===========Options=========='
 		print "mine: Use your Facebook data. (Requires internet connection.)"
 		print "cache: Use Cathy's cache. (default)"
@@ -157,6 +178,13 @@ def print_menu(menu_type, limit = 100):
 		print 'Cannot exceed ' + str(limit) + ' genres.'
 
 def put_in_range(num, minimum, maximum):
+
+	'''
+	REQUIRES: three numbers. 
+	EFFECTS: returns the number if it is between the minimum and maximum, 
+				returns the maximum if the number exceeds the maximum,
+				returns the minimum if the number is lower than the maximum.
+	'''
 	if num > maximum:
 		return maximum
 	elif num < minimum:
@@ -164,6 +192,15 @@ def put_in_range(num, minimum, maximum):
 	return num
 
 def interaction_driver(user, spotify_artist_info, spotify_related_info):
+	'''
+	REQUIRES: a FacebookUser object, a dictionary of that user's liked artists' spotify information, a dictionary of related artist information for each liked artist
+	EFFECTS: runs the main program with the user, which can:
+			print top recommended artists in command line
+			save this to a file
+			open a youtube page for recommended artists
+			print user's top genres
+			save this to a file
+	'''
 	print_menu('start')
 	user_input = raw_input()
 	while user_input != 'Q':
@@ -188,19 +225,35 @@ def interaction_driver(user, spotify_artist_info, spotify_related_info):
 			#handle numbers not in range
 			num_recs = put_in_range(num_recs, 0, len(top_recs))
 
-			for i in top_recs[:num_recs]:
-				print i
+			#this variable is for the number that prints next to the artist
+			store_rank_number = 1
 
-			#ask if they'd like this information saved to a file
-			print_menu('write to file')
-			to_write = raw_input()
-			if to_write == 'Y':
-				file_name = raw_input('Please enter a file name without the .txt extension.')
-				f = open(file_name + '.txt', 'w')
-				for i in top_recs[:num_recs]:
-					f.write(i)
-					f.write('\n')
-				f.close()
+			#print the artists. top_recs[i][0] denotes the name of the artist
+			for i in range(num_recs):
+				#if band has same frequency as another, this number will show that those with equal ranking have the same number
+				if i != 0 and top_recs[i][1] != top_recs[i - 1][1]:
+					store_rank_number += 1
+				print store_rank_number, top_recs[i][0]
+
+			if num_recs > 0:
+				#ask if they'd like this information saved to a file
+				print_menu('write to file')
+				to_write = raw_input()
+				if to_write == 'Y':
+					file_name = raw_input('Please enter a valid file name without the .txt extension. ')
+					f = open(file_name + '.txt', 'w')
+
+					#write to file
+					store_rank_number = 1
+					for i in range(num_recs):
+						if i != 0 and top_recs[i][1] != top_recs[i - 1][1]:
+							store_rank_number += 1
+						f.write(str(store_rank_number))
+						f.write(' ')
+						f.write(top_recs[i][0])
+						f.write('\n')
+
+					f.close()
 
 			#ask if they'd like to listen to this artist on YouTube
 			#will open web browser depending on how many artists they want to listen to
@@ -210,21 +263,14 @@ def interaction_driver(user, spotify_artist_info, spotify_related_info):
 				#will fail if a non-number was inputted. Meaning No.
 				num_youtube = int(num_youtube)
 
-			except:
-				invalid = True
-				while invalid:
-					try: 
-						num_youtube = int(raw_input('Please enter a valid number.'))
-						invalid = False
-					except:
-						pass
-
-				#in case numbers are out of range
+			#in case numbers are out of range
 				num_youtube	= put_in_range(num_youtube, 0, len(top_recs))		
-
 				for artist in top_recs[:num_youtube]:
-					youtube_url = 'https://www.youtube.com/results?search_query=' + artist + '&page=&utm_source=opensearch'
+					youtube_url = 'https://www.youtube.com/results?search_query=' + artist[0] + ' Music' + '&page=&utm_source=opensearch'
 					webbrowser.open(youtube_url)
+
+			except:
+				pass
 			
 
 		elif user_input == 'B':
@@ -236,19 +282,36 @@ def interaction_driver(user, spotify_artist_info, spotify_related_info):
 			#in case numbers are out of range
 			num_genres = put_in_range(num_genres, 0, len(top_genres))
 
-			for i in top_genres[:num_genres]:
-				print i
+			#this variable is for the number that prints next to the artist
+			store_rank_number = 1
 
-			#ask if they'd like this information saved to a file
-			print_menu('write to file')
-			to_write = raw_input()
-			if to_write == 'Y':
-				file_name = raw_input('Please enter a file name without the .txt extension.')
-				f = open(file_name + '.txt', 'w')
-				for i in top_genres[:num_genres]:
-					f.write(i)
-					f.write('\n')
-				f.close()
+			#print the genres. top_genres[i][0] denotes the name of the genre
+			for i in range(num_genres):
+				#if genre has same frequency as another, this number will show that those with equal ranking have the same number
+				if i != 0 and top_genres[i][1] != top_genres[i - 1][1]:
+					store_rank_number += 1
+				print store_rank_number, top_genres[i][0]
+
+			if num_genres > 0:
+				#ask if they'd like this information saved to a file
+				print_menu('write to file')
+				to_write = raw_input()
+				if to_write == 'Y':
+					file_name = raw_input('Please enter a valid file name without the .txt extension. ')
+					f = open(file_name + '.txt', 'w')
+
+					#write to file
+					store_rank_number = 1
+					for i in range(num_genres):
+						if i != 0 and top_genres[i][1] != top_genres[i - 1][1]:
+							store_rank_number += 1
+						f.write(str(store_rank_number))
+						f.write(' ')
+						f.write(top_genres[i][0])
+						f.write('\n')
+
+					f.close()
+
 
 		else:
 			print 'Invalid input. Please type either the letter A, B, or Q.'
@@ -262,6 +325,10 @@ def interaction_driver(user, spotify_artist_info, spotify_related_info):
 
 #############GET FACEBOOK DATA AND CACHE###############################
 def get_facebook_data(fb_access_token = fb_access_token, fb_cache_fname = fb_cache_fname):
+	'''
+	REQUIRES: the global variable fb_cache_fname is a valid file name
+	EFFECTS: makes request to Facebook API or uses Cache to get a dictionary of information on the users' liked artists
+	'''
 	fb_cache = {}
 	try:
 		#if a cache file exists, use it
@@ -288,6 +355,7 @@ def get_facebook_data(fb_access_token = fb_access_token, fb_cache_fname = fb_cac
 			if e.message == 'music':
 				print fb_access_token
 				print 'Invalid Oauth. Either expired or empty. Please get a fresh token from Facebook.'
+				print 'Alternatively, you have no Music likes on Facebook'
 			elif e.message == 'next':
 				#there is no next page
 				#e.message would be 'next' in this case
@@ -415,7 +483,7 @@ def request_spotify_related(User, spotify_artist_info):
 			#no search results found :(
 			else:
 				print 'No related artists found for ' + artist.artist_name
-				print 'Removing ' + artist.artist_name + ' from analysis'
+				print 'Removing', artist, 'from analysis'
 				spotify_related_cache[artist.artist_id] = 'none'
 
 	f = open(spot_related_cache_fname, 'w')
@@ -425,33 +493,35 @@ def request_spotify_related(User, spotify_artist_info):
 	return spotify_related_info
 #########################################START OF PROGRAM##################################################
 
-# print "Hello! Welcome to Cathy's Music Recommendation Program!"
+print "Hello! Welcome to Cathy's Music Recommendation Program!"
 
-# #Ask whether user wants to use own data or cached data
-# print_menu('live data')
-# live = raw_input()
+#Ask whether user wants to use own data or cached data
+print_menu('live data')
+live = raw_input()
 
-# #Ask for their access token if they want to use their own data
-# if live == 'mine':
-# 	print_menu('access token')
-# 	fb_access_token = raw_input()
-# 	fb_user_data = get_facebook_data(fb_access_token = fb_access_token, fb_cache_fname = 'fb_music_cache1.txt')
-# else:
-# 	fb_user_data = get_facebook_data()
+#Ask for their access token if they want to use their own data
+if live == 'mine':
+	print_menu('access token')
+	fb_access_token = raw_input()
+	fb_user_data = get_facebook_data(fb_access_token = fb_access_token, fb_cache_fname = 'my_fb_music_cache.txt')
+else:
+	fb_user_data = get_facebook_data()
 
 # print 'Creating Facebook User instance'
-# User = FacebookUser(fb_user_data)
+User = FacebookUser(fb_user_data)
 
 # print 'Getting Spotify search data'
-# spotify_artist_info = run_spotify_search(User)
+spotify_artist_info = run_spotify_search(User)
 
 # print 'Getting Spotify related artist data'
-# spotify_related_info = request_spotify_related(User)
+spotify_related_info = request_spotify_related(User, spotify_artist_info)
 
-# print 'Starting main driver'
-# interaction_driver(User, spotify_artist_info, spotify_related_info)
+print 'Starting main driver...'
+print 'Hello',
+print User
+interaction_driver(User, spotify_artist_info, spotify_related_info)
 
-##UNIT TESTS USING MY FACEBOOK ACCOUNT
+#UNIT TESTS 
 sample_fb_data = {"music": {
 					 "data": [
 					 {"created_time": "2016-12-03T17:49:10+0000", "name": "Passion Pit", "id": "63224190085"}, 
