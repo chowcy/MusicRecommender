@@ -5,7 +5,7 @@ import requests
 import json
 import unittest
 import webbrowser
-from pprint import pprint
+#from pprint import pprint
 
 
 ##############VARIABLES FOR FACEBOOK REQUESTS#######################
@@ -168,7 +168,8 @@ def print_menu(menu_type, limit = 100):
 		print 'N: no (default)'
 	elif menu_type == 'youtube':
 		print 'Would you like to listen to some of these artists on YouTube?'
-		print 'This will open a tab on your web browser for each artist on YouTube, so you must have an internet connection.'
+		print 'This would open a tab on your web browser for each artist on YouTube, so you must have an internet connection.'
+		print 'And I also recommend you pick a low number.'
 		print '===========Options=========='
 		print 'N: no (default)'
 		print 'If yes, type how many artists you would to listen to on YouTube.'
@@ -218,7 +219,7 @@ def interaction_driver(user, spotify_artist_info, spotify_related_info):
 				invalid = True
 				while invalid:
 					try: 
-						num_recs = int(raw_input('Please enter a valid number.'))
+						num_recs = int(raw_input('Please enter a valid number. '))
 						invalid = False
 					except:
 						pass
@@ -259,6 +260,7 @@ def interaction_driver(user, spotify_artist_info, spotify_related_info):
 			#will open web browser depending on how many artists they want to listen to
 			print_menu('youtube', len(top_recs))
 			num_youtube = raw_input()
+
 			try:
 				#will fail if a non-number was inputted. Meaning No.
 				num_youtube = int(num_youtube)
@@ -277,7 +279,20 @@ def interaction_driver(user, spotify_artist_info, spotify_related_info):
 			#print top genres depending on how many they want
 			top_genres = user.top_genres(spotify_artist_info)
 			print_menu('genres', len(top_genres))
-			num_genres = int(raw_input())
+			
+
+			try:
+				#will fail if a non-number was inputted
+				num_genres = int(raw_input())
+
+			except:
+				invalid = True
+				while invalid:
+					try: 
+						num_genres = int(raw_input('Please enter a valid number. '))
+						invalid = False
+					except:
+						pass
 
 			#in case numbers are out of range
 			num_genres = put_in_range(num_genres, 0, len(top_genres))
@@ -517,8 +532,11 @@ spotify_artist_info = run_spotify_search(User)
 spotify_related_info = request_spotify_related(User, spotify_artist_info)
 
 print 'Starting main driver...'
+print '~~~~~~~~~~~~~~~~~~~~~~~~~********~~~~~~~~~~~~~~~~~~~~~~~~~'
 print 'Hello',
 print User
+print 'Your Facebook id is: ', User.user_id
+
 interaction_driver(User, spotify_artist_info, spotify_related_info)
 
 #UNIT TESTS 
@@ -529,7 +547,7 @@ sample_fb_data = {"music": {
 					 {"created_time": "2016-12-03T17:46:41+0000", "name": "Xerath", "id": "33434396077"}, 
 					 {"created_time": "2016-12-03T17:46:11+0000", "name": "The Faceless", "id": "200878716073"} ] }, 
 				"name": "Test User", 
-				"id": "10153037726223192" } 
+				"id": "10000000000000000" } 
 me = FacebookUser(sample_fb_data)
 
 #will use my cache to look up artists
@@ -555,7 +573,7 @@ class FacebookUserClass(unittest.TestCase):
 	def test_name(self):
 		self.assertEqual(me.user_name, 'Test User', "testing facebook user's name") 
 	def test_id(self):
-		self.assertEqual(me.user_id, '10153037726223192', "testing facebook user's id #") 
+		self.assertEqual(me.user_id, '10000000000000000', "testing facebook user's id #") 
 	def test_list_artists1(self):
 		self.assertEqual(me.list_artists[0], 'Passion Pit', "testing facebook user's first music like")
 	def test_list_artists2(self):
@@ -572,6 +590,8 @@ class ArtistClass(unittest.TestCase):
 
 #Artist_list's order changes so can't assertEqual my_Artist_list[0].artist_name. using assertIn instead
 class GetArtistList(unittest.TestCase):
+	def test_type(self):
+		self.assertEqual(type(my_Artist_list), type([]), 'testing whether GetArtistList returns a list')
 	def test_length(self):
 		self.assertEqual(len(my_Artist_list), 4, "testing whether length of list is correct")
 	def test_Name1(self):
@@ -588,6 +608,8 @@ class GetArtistList(unittest.TestCase):
 		self.assertIn("brutal death metal", [i.genres[0] for i in my_Artist_list], "testing whether the Faceless's first genre is correct")
 
 class GetRelatedArtist(unittest.TestCase):
+	def test_type(self):
+		self.assertEqual(type(the_faceless.get_related_artists(my_spotify_related)), type([]), 'testing whether GetRelatedArtist returns a list')
 	def test_length(self):
 		self.assertEqual(len(the_faceless.get_related_artists(my_spotify_related)), 20, "testing whether length of GetRelatedArtist list correct")
 	def test_name(self):
