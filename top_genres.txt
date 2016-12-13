@@ -1,0 +1,114 @@
+1 alternative metal
+2 melodic metalcore
+2 nu metal
+3 rock
+4 djent
+4 metalcore
+5 jazz metal
+5 progressive metal
+5 progressive post-hardcore
+5 screamo
+6 death core
+6 groove metal
+6 mathcore
+6 metal
+6 pop punk
+6 post-grunge
+7 classic rock
+7 emo
+7 folk-pop
+8 album rock
+8 death metal
+8 dreamo
+8 indie pop
+8 progressive rock
+8 rap metal
+8 technical death metal
+9 alternative rock
+9 hard rock
+9 indie rock
+9 melodic death metal
+9 neo classical metal
+9 pop
+10 alternative dance
+10 avantgarde metal
+10 bow pop
+10 brutal death metal
+10 deathgrind
+10 indietronica
+10 industrial metal
+10 mellow gold
+10 post rock
+10 post-doom metal
+10 post-hardcore
+10 post-metal
+10 power metal
+10 progressive alternative
+10 punk
+10 punk christmas
+10 rap rock
+10 soft rock
+10 symphonic rock
+10 synthpop
+11 alternative emo
+11 art rock
+11 atmospheric black metal
+11 black metal
+11 blackgaze
+11 blues-rock
+11 british invasion
+11 brutal deathcore
+11 canadian indie
+11 canadian metal
+11 canadian pop
+11 chamber pop
+11 chaotic hardcore
+11 classify
+11 contemporary country
+11 country
+11 crossover prog
+11 dance pop
+11 folk
+11 folk christmas
+11 folk rock
+11 funk rock
+11 garage rock
+11 german metal
+11 gothic metal
+11 grunge
+11 indie folk
+11 indie poptimism
+11 industrial
+11 industrial rock
+11 irish rock
+11 melancholia
+11 merseybeat
+11 modern blues
+11 neo mellow
+11 neo-progressive
+11 neue deutsche harte
+11 new rave
+11 nwobhm
+11 piano rock
+11 pop christmas
+11 pop rock
+11 post-teen pop
+11 protopunk
+11 psychedelic rock
+11 punk blues
+11 roots rock
+11 shimmer pop
+11 singer-songwriter
+11 skate punk
+11 sludge metal
+11 space rock
+11 stomp and holler
+11 stoner metal
+11 stoner rock
+11 string quartet
+11 swedish metal
+11 symphonic black metal
+11 traditional folk
+11 usbm
+11 viral pop
+11 wrestling
