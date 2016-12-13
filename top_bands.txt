@@ -1,0 +1,630 @@
+1 TesseracT
+2 Cynic
+2 Textures
+3 Machine Head
+3 Monuments
+3 SikTh
+4 Animals As Leaders
+4 As Tall As Lions
+4 Closure in Moscow
+4 Killswitch Engage
+4 Leprous
+4 Pain of Salvation
+4 Scale The Summit
+4 Senses Fail
+4 Strapping Young Lad
+4 The Contortionist
+4 The Fall of Troy
+4 The Receiving End Of Sirens
+4 The Safety Fire
+4 Tides Of Man
+4 Vildhjarta
+5 A Lot Like Birds
+5 All That Remains
+5 Anthony Green
+5 Ayreon
+5 Bullet For My Valentine
+5 David Maxim Micic
+5 Despised Icon
+5 Escape the Fate
+5 Fates Warning
+5 Fleshgod Apocalypse
+5 Funeral For A Friend
+5 Glassjaw
+5 Hrvrd
+5 Job For A Cowboy
+5 Meshuggah
+5 Minus The Bear
+5 Papa Roach
+5 Periphery
+5 Protest The Hero
+5 Revocation
+5 Riverside
+5 Saosin
+5 Skyharbor
+5 Spock's Beard
+5 Thank You Scientist
+5 The Algorithm
+5 Thomas Giles
+5 Thursday
+5 Trivium
+5 Veil Of Maya
+6 AFI
+6 After The Burial
+6 Alexisonfire
+6 All Shall Perish
+6 Allegaeon
+6 Armor For Sleep
+6 As Blood Runs Black
+6 As I Lay Dying
+6 At The Gates
+6 Attila
+6 Behemoth
+6 Betraying The Martyrs
+6 Beyond Creation
+6 Big Big Train
+6 Bloodbath
+6 Born Of Osiris
+6 Broken Bells
+6 Caliban
+6 Carnifex
+6 Chelsea Grin
+6 Chimp Spanner
+6 Chiodos
+6 Circles
+6 Circus Maximus
+6 Dark Tranquillity
+6 Darkest Hour
+6 Dear and the Headlights
+6 Destiny Potato
+6 Dimmu Borgir
+6 Disturbed
+6 Donovan
+6 Dr. Acula
+6 Drowning Pool
+6 Emmure
+6 Envy On The Coast
+6 Eskimo Callboy
+6 Evergrey
+6 Fear Factory
+6 Finch
+6 Flying Colors
+6 Forgive Durden
+6 Foster The People
+6 Friendly Fires
+6 From Autumn To Ashes
+6 George Harrison
+6 Good Charlotte
+6 Gorod
+6 Grouplove
+6 Hawthorne Heights
+6 Heaven Shall Burn
+6 Ihsahn
+6 Intervals
+6 ISIS
+6 iwrestledabearonce
+6 Karmakanic
+6 Lydia
+6 Mastodon
+6 Miike Snow
+6 Mudvayne
+6 Ne Obliviscaris
+6 Necrophagist
+6 Obscura
+6 Oceano
+6 Phoenix
+6 Plini
+6 Porcupine Tree
+6 Psycroptic
+6 Rings of Saturn
+6 Saves The Day
+6 Serj Tankian
+6 Silverstein
+6 Slipknot
+6 Soen
+6 Spawn of Possession
+6 Static-X
+6 Steven Wilson
+6 Stone Sour
+6 Strawberry Girls
+6 Suicide Silence
+6 Taking Back Sunday
+6 The Browning
+6 The Byrds
+6 The Dillinger Escape Plan
+6 The Haunted
+6 The Hollies
+6 The Human Abstract
+6 The Kinks
+6 The Naked And Famous
+6 The Ocean
+6 The Prize Fighter Inferno
+6 The Sound Of Animals Fighting
+6 The Used
+6 Thy Art Is Murder
+6 Underoath
+6 Uneven Structure
+6 Vampire Weekend
+6 Whitechapel
+6 Winds of Plague
+6 Wretched
+7 *Shels
+7 2Cellos
+7 3
+7 36 Crazyfists
+7 38 Special
+7 A Perfect Circle
+7 A$AP Rocky
+7 Accept
+7 Acceptance
+7 Agalloch
+7 Alabama Shakes
+7 Alarm Will Sound
+7 Alcest
+7 Alexi Murdoch
+7 Alice In Chains
+7 All Time Low
+7 Altar Of Plagues
+7 Alter Bridge
+7 Amorphis
+7 An Autumn for Crippled Children
+7 Anathema
+7 And So I Watch You from Afar
+7 Angra
+7 Anthrax
+7 Anti-Flag
+7 Anup Sastry
+7 Anywhere
+7 Apocalyptica
+7 Arch Enemy
+7 Archspire
+7 Arena
+7 Arsis
+7 Art By Numbers
+7 Art Garfunkel
+7 Artifex Pereo
+7 As Cities Burn
+7 Asia
+7 Audioslave
+7 August Burns Red
+7 Aversions Crown
+7 Avril Lavigne
+7 Bachman-Turner Overdrive
+7 Balanescu Quartet
+7 Band Of Skulls
+7 Bang On A Can All-Stars
+7 Baroness
+7 Bayside
+7 Beardfish
+7 Beatsteaks
+7 Belphegor
+7 Beneath The Massacre
+7 Benjamin Francis Leftwich
+7 Better Than Ezra
+7 Big Sean
+7 Big Wreck
+7 Black Crown Initiate
+7 Black Rebel Motorcycle Club
+7 Black Sabbath
+7 blessthefall
+7 Blind Guardian
+7 Blind Pilot
+7 Bloc Party
+7 Bloodhound Gang
+7 Blue Öyster Cult
+7 Bob Dylan
+7 Bombay Bicycle Club
+7 Books on Tape
+7 Bosse-de-Nage
+7 Boston
+7 Boys Night Out
+7 Breaking Benjamin
+7 Bridgit Mendler
+7 Bruce Dickinson
+7 Buddy Holly
+7 Burning The Masses
+7 Bush
+7 Cage The Elephant
+7 Caligula's Horse
+7 Camel
+7 Candlebox
+7 Carach Angren
+7 Carly Rae Jepsen
+7 Carole King
+7 Carptree
+7 Carrie Underwood
+7 Caspian
+7 Cavalera Conspiracy
+7 Chancellor
+7 Chicanery
+7 Childish Gambino
+7 Children Of Bodom
+7 Chimaira
+7 Chris Brown
+7 Christina Perri
+7 Christopher O'Riley
+7 Chuck Berry
+7 Colbie Caillat
+7 Cold War Kids
+7 Collective Soul
+7 Converge
+7 Copeland
+7 Corelia
+7 Crippled Black Phoenix
+7 Crosby, Stills & Nash
+7 Cult Of Luna
+7 Cut Copy
+7 Damageplan
+7 Dan Auerbach
+7 Dance Gavin Dance
+7 Dark Funeral
+7 David Archuleta
+7 Days Between Stations
+7 Days Of The New
+7 Dead Letter Circus
+7 Deas Vail
+7 Deathstars
+7 Decapitated
+7 Deep Purple
+7 Deftones
+7 Demi Lovato
+7 Destrage
+7 Devil You Know
+7 DevilDriver
+7 Devilment
+7 Dio
+7 Discovery
+7 Dishwalla
+7 Dissection
+7 Divine Heresy
+7 Don McLean
+7 Donots
+7 Dope
+7 Drake
+7 Dry the River
+7 Dustin O'Halloran
+7 Eagles Of Death Metal
+7 Echolyn
+7 Edison Glass
+7 Eidola
+7 Eisbrecher
+7 Electric President
+7 Elvis Presley
+7 Elysian Quartet
+7 Emarosa
+7 Emerson String Quartet
+7 Emerson, Lake & Palmer
+7 Emery
+7 Emigrate
+7 Emperor
+7 Empire of the Sun
+7 Enslaved
+7 Enter Shikari
+7 Eric Clapton
+7 Eric Whitacre
+7 Escala
+7 Eve 6
+7 Everclear
+7 Every Time I Die
+7 Everything Everything
+7 Fall Out Boy
+7 Falling In Reverse
+7 Fear Before The March Of Flames
+7 Fellsilent
+7 Filter
+7 Five Finger Death Punch
+7 Foals
+7 Foghat
+7 Foreigner
+7 Frank Ocean
+7 Franz Ferdinand
+7 Freelance Whales
+7 Fuel
+7 Further Seems Forever
+7 Galahad
+7 Gastar-Ten
+7 George Martin
+7 Gerard Way
+7 Get Scared
+7 Ghost Bath
+7 God Forbid
+7 God Is An Astronaut
+7 Godsmack
+7 Gordon Lightfoot
+7 Graveworm
+7 Greg Laswell
+7 Gregory Alan Isakov
+7 Hacride
+7 Hail The Sun
+7 Halo Circus
+7 Hannah Montana
+7 Happy Body Slow Brain
+7 Harry Nilsson
+7 Haste The Day
+7 Hatebreed
+7 Have A Nice Life
+7 He Is Legend
+7 He Met Her
+7 Headspace
+7 Heart
+7 Helloween
+7 HELLYEAH
+7 Hilary Duff
+7 Horse Feathers
+7 Hypocrisy
+7 I Am Alaska
+7 I Mother Earth
+7 Icarus The Owl
+7 Icebreaker
+7 Iced Earth
+7 If These Trees Could Talk
+7 Immortal
+7 In Extremo
+7 In Flames
+7 In Mourning
+7 In This Moment
+7 Insomnium
+7 IQ
+7 Iron & Wine
+7 It Dies Today
+7 Itchy Poopzkid
+7 IZZ
+7 J. Cole
+7 Jack White
+7 Jakob
+7 James Blake
+7 James Labrie
+7 James Taylor
+7 Jefferson Starship
+7 Jeremih
+7 Jethro Tull
+7 Jhene Aiko
+7 Jim Croce
+7 Jimi Hendrix
+7 Joe Satriani
+7 John Lennon
+7 Jonas Brothers
+7 Joni Mitchell
+7 Jordan Rudess
+7 Judas Priest
+7 Junius
+7 Kaddisfly
+7 Kaipa
+7 Kamelot
+7 Kanye West
+7 Karnivool
+7 Kasabian
+7 Katatonia
+7 Katy Perry
+7 Kay Kay and His Weathered Underground
+7 Kelly Clarkson
+7 Kendrick Lamar
+7 Kesha
+7 Kid Cudi
+7 Kimono Draggin'
+7 King Diamond
+7 Knight Area
+7 Korn
+7 Korpiklaani
+7 Kronos Quartet
+7 Lady Antebellum
+7 Lady Radiator
+7 Landmarq
+7 Lantlôs
+7 Limp Bizkit
+7 Lindemann
+7 Liquid Tension Experiment
+7 Liturgy
+7 Live
+7 Loma Prieta
+7 Long Distance Calling
+7 Los Angeles Guitar Quartet
+7 Ludovico Einaudi
+7 Madsen
+7 Magic Pie
+7 Mandy Moore
+7 Manfred Mann's Earth Band
+7 Manowar
+7 Marduk
+7 Margot & The Nuclear So And So's
+7 Marilyn Manson
+7 Maserati
+7 Matchbook Romance
+7 Matt and Kim
+7 Matthew And The Atlas
+7 Matthew Good
+7 Matthew Good Band
+7 Maybeshewill
+7 Mayday Parade
+7 Megadeth
+7 Megaherz
+7 Meghan Trainor
+7 mewithoutYou
+7 MGMT
+7 Michael Nyman
+7 Miguel
+7 Miley Cyrus
+7 Modern Day Babylon
+7 Moneen
+7 MONO
+7 Moonspell
+7 Motörhead
+7 My Dying Bride
+7 Myrath
+7 Mystery Jets
+7 Nails
+7 Ne-Yo
+7 Neil Diamond
+7 Neurosis
+7 New Found Glory
+7 Night Verses
+7 Nightmare Of You
+7 Nile
+7 Nine Inch Nails
+7 Noah And The Whale
+7 Northstar
+7 O'Brother
+7 Oathbreaker
+7 Old Man's Child
+7 Oleander
+7 OOMPH!
+7 Orbs
+7 Origin
+7 Ozzy Osbourne
+7 P.O.D.
+7 Pain
+7 Pallas
+7 Panic Room
+7 Panic! At The Disco
+7 Panopticon
+7 Pantera
+7 Paper Rival
+7 Paradise Lost
+7 Paramore
+7 Paul McCartney
+7 Paul Simon
+7 Pelican
+7 Persefone
+7 Peter Bjorn and John
+7 Peter, Paul and Mary
+7 pg.lost
+7 Phideaux
+7 Pierce The Veil
+7 Pomegranate Tiger
+7 Puscifer
+7 Quatuor Ébène
+7 Queens of the Stone Age
+7 Queensrÿche
+7 Ra Ra Riot
+7 Rachel Platten
+7 Rage Against The Machine
+7 Rainbow
+7 Red Sparowes
+7 Reggie And The Full Effect
+7 REO Speedwagon
+7 Ringo Starr
+7 Rise Against
+7 Rishloo
+7 Rivers of Nihil
+7 Roadrunner United
+7 Rob Zombie
+7 Rocket Scientists
+7 Rogue Wave
+7 Rosetta
+7 Rotting Christ
+7 Roy Orbison
+7 Royal Republic
+7 RPWL
+7 Rush
+7 Rx Bandits
+7 S. Carey
+7 Samael
+7 Satyricon
+7 Save Us from the Archon
+7 Saxon
+7 Say Anything
+7 Scars On Broadway
+7 Sea Wolf
+7 Seabear
+7 Selena Gomez & The Scene
+7 Sepultura
+7 Shadows Fall
+7 Shinedown
+7 Sianvar
+7 Sithu Aye
+7 Skindred
+7 So Percussion
+7 Soreption
+7 Soulfly
+7 Sponge
+7 Staind
+7 Stealing Axion
+7 Steve Vai
+7 Story Of The Year
+7 Straylight Run
+7 STRFKR
+7 Styx
+7 Sum 41
+7 Sybreed
+7 Sylvan
+7 Symphony X
+7 Testament
+7 The Alan Parsons Project
+7 The All-American Rejects
+7 The Arcs
+7 The Beach Boys
+7 The Black Dahlia Murder
+7 The Bled
+7 The Body
+7 The Dead Weather
+7 The Devil Wears Prada
+7 The Early November
+7 The Flower Kings
+7 The Heavy
+7 The Helix Nebula
+7 The Juliana Theory
+7 The Kills
+7 The Kooks
+7 The Maccabees
+7 The Mamas & The Papas
+7 The Mars Volta
+7 The Middle East
+7 The New Order
+7 The Piano Guys
+7 The Pineapple Thief
+7 The Raconteurs
+7 The Red Jumpsuit Apparatus
+7 The Red Masque
+7 The Rolling Stones
+7 The Section Quartet
+7 The Shins
+7 The Strokes
+7 The Tallest Man On Earth
+7 The Tangent
+7 The Tea Party
+7 The Temper Trap
+7 The Vaccines
+7 The Verve Pipe
+7 The Watch
+7 The White Stripes
+7 The Wombats
+7 The-Dream
+7 This Day & Age
+7 This Providence
+7 This Will Destroy You
+7 Tokyo Police Club
+7 Tonic
+7 Trap Them
+7 Trepalium
+7 Trey Songz
+7 Tristan Park
+7 Triumph
+7 Twisted Sister
+7 Two Tongues
+7 Tyler, The Creator
+7 Ulcerate
+7 Unearth
+7 Uriah Heep
+7 Vale Of Pnath
+7 Van Morrison
+7 Volcano Choir
+7 Volto
+7 W.A.S.P.
+7 Wale
+7 WALK THE MOON
+7 Weatherbox
+7 Whirr
+7 White Lies
+7 Wide Awake
+7 Wings
+7 Winterfylleth
+7 Wiz Khalifa
+7 Wolfmother
+7 Wolves In The Throne Room
+7 Yellowcard
+7 Yes
+7 Yngwie Malmsteen
+7 Young the Giant
+7 Yusuf / Cat Stevens
+7 zebrahead
+7 Ólafur Arnalds
